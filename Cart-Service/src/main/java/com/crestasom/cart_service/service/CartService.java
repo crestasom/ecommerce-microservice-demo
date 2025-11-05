@@ -1,5 +1,8 @@
 package com.crestasom.cart_service.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -7,16 +10,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.crestasom.cart_service.entity.Cart;
 import com.crestasom.cart_service.entity.CartDTO;
+import com.crestasom.cart_service.entity.CartItem;
 import com.crestasom.cart_service.entity.Product;
 import com.crestasom.cart_service.entity.User;
 import com.crestasom.cart_service.repository.CartRepository;
 
 @Service
 public class CartService {
-
-	RestTemplate restTemplate = new RestTemplate();
+	@Autowired
+	RestTemplate restTemplate;
 	@Value("${user.service.uri}")
 	private String userServiceUri;
 	@Value("${product.service.uri}")
@@ -25,11 +28,9 @@ public class CartService {
 	@Autowired
 	private CartRepository cartRepository;
 
-
-
-	public Cart getCartByUserId(Long userId) {
-		ResponseEntity<User> userEntity = restTemplate.getForEntity(userServiceUri + userId,
-				User.class);
+	public CartDTO getCartByUserId(Long userId) {
+		CartDTO dto = new CartDTO();
+		ResponseEntity<User> userEntity = restTemplate.getForEntity(userServiceUri + userId, User.class);
 		if (userEntity.getStatusCode() != HttpStatus.OK || userEntity.getBody() == null) {
 			throw new RuntimeException("cannot get user from user service");
 		}
@@ -37,34 +38,33 @@ public class CartService {
 		if (u == null) {
 			throw new RuntimeException("User not found");
 		}
-		Cart c = cartRepository.findByUserId(userId);
-
-		if (c == null) {
-			c = new Cart(null, u);
-			cartRepository.save(c);
+		dto.setUser(u);
+		List<Product> productList = new ArrayList<>();
+		List<CartItem> cartItems = cartRepository.findByUserId(userId);
+		for (CartItem item : cartItems) {
+//			Product p = new Product();
+//			p.setId(item.getProductId());
+			ResponseEntity<Product> productEntity = restTemplate.getForEntity(productServiceUri + item.getProductId(),
+					Product.class);
+			if (productEntity.getStatusCode() != HttpStatus.OK || productEntity.getBody() == null) {
+				throw new RuntimeException("cannot get product from product service");
+			}
+			Product p = productEntity.getBody();
+			if (p == null) {
+				throw new RuntimeException("product not found");
+			}
+			productList.add(p);
 		}
-		return c;
+		dto.setProducts(productList);
+		return dto;
+
 	}
 
-	public Cart addProductToCart(CartDTO cartDto) {
-		Cart cart = getCartByUserId(cartDto.getUserId());
-
-		ResponseEntity<Product> productEntity = restTemplate
-				.getForEntity(productServiceUri + cartDto.getProductId(), Product.class);
-		if (productEntity.getStatusCode() != HttpStatus.OK || productEntity.getBody() == null) {
-			throw new RuntimeException("cannot get product from product service");
-		}
-		Product product = productEntity.getBody();
-		if (product == null) {
-			throw new RuntimeException("Product not found");
-		}
-		cart.getProducts().add(product);
-		return cartRepository.save(cart);
+	public CartItem addProductToCart(CartItem cartDto) {
+		return cartRepository.save(cartDto);
 	}
 
-	public Cart removeProductFromCart(Long userId, Long productId) {
-		Cart cart = getCartByUserId(userId);
-		cart.getProducts().removeIf(p -> p.getId().equals(productId));
-		return cartRepository.save(cart);
+	public void removeProductFromCart(Long cartId) {
+		cartRepository.deleteById(cartId);
 	}
 }
