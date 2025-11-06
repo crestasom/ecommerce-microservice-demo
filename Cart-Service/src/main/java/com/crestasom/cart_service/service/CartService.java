@@ -15,6 +15,7 @@ import com.crestasom.cart_service.entity.CartItem;
 import com.crestasom.cart_service.entity.Product;
 import com.crestasom.cart_service.entity.User;
 import com.crestasom.cart_service.repository.CartRepository;
+import com.crestasom.cart_service.service.feign.UserServiceClient;
 
 @Service
 public class CartService {
@@ -24,17 +25,20 @@ public class CartService {
 	private String userServiceUri;
 	@Value("${product.service.uri}")
 	private String productServiceUri;
+	@Autowired
+	private UserServiceClient userServiceClient;
 
 	@Autowired
 	private CartRepository cartRepository;
 
 	public CartDTO getCartByUserId(Long userId) {
 		CartDTO dto = new CartDTO();
-		ResponseEntity<User> userEntity = restTemplate.getForEntity(userServiceUri + userId, User.class);
-		if (userEntity.getStatusCode() != HttpStatus.OK || userEntity.getBody() == null) {
-			throw new RuntimeException("cannot get user from user service");
-		}
-		User u = userEntity.getBody();
+//		ResponseEntity<User> userEntity = restTemplate.getForEntity(userServiceUri + userId, User.class);
+//		if (userEntity.getStatusCode() != HttpStatus.OK || userEntity.getBody() == null) {
+//			throw new RuntimeException("cannot get user from user service");
+//		}
+//		User u = userEntity.getBody();
+		User u = userServiceClient.getUserById(userId);
 		if (u == null) {
 			throw new RuntimeException("User not found");
 		}
