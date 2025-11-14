@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.crestasom.user_service.conig.MqttGateway;
 import com.crestasom.user_service.entity.User;
 import com.crestasom.user_service.repository.UserRepository;
 
@@ -16,6 +17,8 @@ public class UserService {
 
     @Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private MqttGateway mqttGateway;
 
 	private int i = 1;
     public List<User> getAllUsers() {
@@ -32,7 +35,9 @@ public class UserService {
 
     public User createUser(User user) {
 
-        return userRepository.save(user);
+		User u = userRepository.save(user);
+		mqttGateway.senToMqtt(u.getId() + "", "user-topic");
+		return u;
     }
 
     public User updateUser(Long id, User userDetails) {

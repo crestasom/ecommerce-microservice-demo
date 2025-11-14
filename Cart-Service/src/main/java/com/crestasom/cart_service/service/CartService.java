@@ -1,7 +1,9 @@
 package com.crestasom.cart_service.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,7 +29,7 @@ public class CartService {
 	private String productServiceUri;
 	@Autowired
 	private UserServiceClient userServiceClient;
-
+	Set<String> userIdList = new HashSet<>();
 	@Autowired
 	private CartRepository cartRepository;
 
@@ -65,7 +67,15 @@ public class CartService {
 	}
 
 	public CartItem addProductToCart(CartItem cartDto) {
-		return cartRepository.save(cartDto);
+		if (userIdList.contains(cartDto.getUserId() + "")) {
+			return cartRepository.save(cartDto);
+		}
+		throw new RuntimeException("Invalid user id");
+	}
+
+	public void storeUserId(String userId) {
+		System.out.println("saving user id " + userId);
+		userIdList.add(userId);
 	}
 
 	public void removeProductFromCart(Long cartId) {
