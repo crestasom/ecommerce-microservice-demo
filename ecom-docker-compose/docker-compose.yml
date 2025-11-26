@@ -1,0 +1,83 @@
+services:
+  ecom-discovery-server:
+    container_name: ecom-discovery-server
+    build:
+      context: ../Service-Discovery
+      dockerfile: Dockerfile
+    image: ecom-discovery-server:latest
+    ports:
+      - 8120:8120
+    networks:
+      - ms-network
+  ecom-api-gateway:
+    container_name: ecom-api-gateway
+    image: ecom-api-gateway:latest
+    build:
+      context: ../API-Gateway
+      dockerfile: Dockerfile
+    ports:
+      - 8021:8021
+    environment:
+      EUREKA_SERVER: ecom-discovery-server
+    networks:
+      - ms-network
+    depends_on:
+      - ecom-discovery-server
+
+  ecom-user-service:
+    container_name: ecom-user-service
+    image: ecom-user-service:latest
+    build:
+      context: ../User-Service
+      dockerfile: Dockerfile
+    ports:
+      - 8111:8111
+    environment:
+      EUREKA_SERVER: ecom-discovery-server
+      MY_SQL_DB_HOST: mysqldb
+      MY_SQL_DB_USERNAME: root
+      MY_SQL_DB_PASSWORD: example
+      MQTT_HOST: host.docker.internal
+    networks:
+      - ms-network
+    depends_on:
+     - ecom-discovery-server
+  ecom-product-service:
+    container_name: ecom-product-service
+    image: ecom-product-service:latest
+    build:
+      context: ../Product-Service
+      dockerfile: Dockerfile
+    ports:
+      - 8112:8112
+    environment:
+      EUREKA_SERVER: ecom-discovery-server
+      MONGO_DB_HOST: mongodb
+      MONGO_DB_PORT: 27017
+      MONGO_DB_USERNAME: root
+      MONGO_DB_PASSWORD: password
+      MQTT_HOST: host.docker.internal
+    networks:
+      - ms-network
+    depends_on:
+      - ecom-discovery-server
+  ecom-cart-service:
+    container_name: ecom-cart-service
+    build:
+      context: ../Cart-Service
+      dockerfile: Dockerfile
+    image: ecom-cart-service:latest
+    ports:
+      - 8113:8113
+    environment:
+      EUREKA_SERVER: ecom-discovery-server
+      MY_SQL_DB_HOST: mysqldb
+      MY_SQL_DB_USERNAME: root
+      MY_SQL_DB_PASSWORD: example
+    networks:
+      - ms-network
+    depends_on:
+      - ecom-discovery-server
+networks:
+  ms-network:
+    driver: bridge

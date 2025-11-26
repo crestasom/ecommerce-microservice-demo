@@ -1,0 +1,19 @@
+global:
+  scrape_interval: 5s  # Scrape every 5 seconds
+
+scrape_configs:
+  - job_name: 'user-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['ecom-user-service:8111']  # Windows/Mac
+        # use 'localhost:8081' if running outside Docker
+
+  - job_name: 'product-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['ecom-product-service:8112']
+
+  - job_name: 'hotel-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['ecom-cart-service:8113']
