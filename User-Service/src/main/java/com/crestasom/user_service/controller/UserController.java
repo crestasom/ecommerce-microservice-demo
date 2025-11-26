@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.crestasom.user_service.entity.User;
 import com.crestasom.user_service.service.UserService;
 
+import lombok.extern.slf4j.Slf4j;
 
 
 @RestController
 @RequestMapping("/users")
+@Slf4j
 public class UserController {
 
     @Autowired
@@ -32,6 +34,7 @@ public class UserController {
 
     @GetMapping("/{id}")
 	public User getUserById(@PathVariable Long id) {
+		log.info("getUserById [{}]", id);
 		return userService.getUserById(id);
     }
 

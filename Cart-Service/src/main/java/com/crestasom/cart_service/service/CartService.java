@@ -19,7 +19,10 @@ import com.crestasom.cart_service.entity.User;
 import com.crestasom.cart_service.repository.CartRepository;
 import com.crestasom.cart_service.service.feign.UserServiceClient;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class CartService {
 	@Autowired
 	RestTemplate restTemplate;
@@ -47,9 +50,11 @@ public class CartService {
 		dto.setUser(u);
 		List<Product> productList = new ArrayList<>();
 		List<CartItem> cartItems = cartRepository.findByUserId(userId);
+		log.info("cartItems size [{}]", cartItems.size());
 		for (CartItem item : cartItems) {
 //			Product p = new Product();
 //			p.setId(item.getProductId());
+			log.info("calling product service for id {}", item.getProductId());
 			ResponseEntity<Product> productEntity = restTemplate.getForEntity(productServiceUri + item.getProductId(),
 					Product.class);
 			if (productEntity.getStatusCode() != HttpStatus.OK || productEntity.getBody() == null) {
@@ -67,10 +72,10 @@ public class CartService {
 	}
 
 	public CartItem addProductToCart(CartItem cartDto) {
-		if (userIdList.contains(cartDto.getUserId() + "")) {
-			return cartRepository.save(cartDto);
-		}
-		throw new RuntimeException("Invalid user id");
+//		if (userIdList.contains(cartDto.getUserId() + "")) {
+		return cartRepository.save(cartDto);
+//		}
+//		throw new RuntimeException("Invalid user id");
 	}
 
 	public void storeUserId(String userId) {

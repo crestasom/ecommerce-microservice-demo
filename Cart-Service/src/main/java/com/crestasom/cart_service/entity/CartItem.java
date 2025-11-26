@@ -16,10 +16,10 @@ public class CartItem {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long cartId;
-	private Long productId;
+	private String productId;
 	private Long userId;
 
-	public CartItem(Long userId, Long productId) {
+	public CartItem(Long userId, String productId) {
 		this.userId = userId;
 		this.productId = productId;
 	}

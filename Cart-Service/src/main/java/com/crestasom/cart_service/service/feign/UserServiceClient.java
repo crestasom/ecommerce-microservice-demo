@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.crestasom.cart_service.entity.User;
 
-@FeignClient(name = "user-service", url = "http://user-service")
+@FeignClient(name = "user-service")
 public interface UserServiceClient {
 
 	@GetMapping("/users/{id}")
