@@ -1,0 +1,34 @@
+{
+  "Total" : {
+    "transaction" : "Total",
+    "sampleCount" : 200,
+    "errorCount" : 0,
+    "errorPct" : 0.0,
+    "meanResTime" : 1581.6149999999993,
+    "medianResTime" : 1781.5,
+    "minResTime" : 210.0,
+    "maxResTime" : 3129.0,
+    "pct1ResTime" : 2252.4,
+    "pct2ResTime" : 2490.8499999999995,
+    "pct3ResTime" : 2902.800000000001,
+    "throughput" : 51.24263387138099,
+    "receivedKBytesPerSec" : 473.594030233154,
+    "sentKBytesPerSec" : 7.05587048424289
+  },
+  "Get Cart by User id" : {
+    "transaction" : "Get Cart by User id",
+    "sampleCount" : 200,
+    "errorCount" : 0,
+    "errorPct" : 0.0,
+    "meanResTime" : 1581.6149999999993,
+    "medianResTime" : 1781.5,
+    "minResTime" : 210.0,
+    "maxResTime" : 3129.0,
+    "pct1ResTime" : 2252.4,
+    "pct2ResTime" : 2490.8499999999995,
+    "pct3ResTime" : 2902.800000000001,
+    "throughput" : 51.24263387138099,
+    "receivedKBytesPerSec" : 473.594030233154,
+    "sentKBytesPerSec" : 7.05587048424289
+  }
+}
