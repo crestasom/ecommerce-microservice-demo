@@ -12,6 +12,8 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
+    networks:
+      - ms-network
 
   # ------------------------------
   # GRAFANA
@@ -23,3 +25,8 @@ services:
       - prometheus
     ports:
       - "3000:3000"
+    networks:
+      - ms-network
+networks:
+  ms-network:
+    driver: bridge

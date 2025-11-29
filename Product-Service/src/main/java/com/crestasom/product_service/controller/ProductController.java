@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.crestasom.product_service.entity.Product;
+import com.crestasom.product_service.entity.ProductSearchDTO;
 import com.crestasom.product_service.service.ProductService;
 
 
@@ -32,6 +33,11 @@ public class ProductController {
     @GetMapping("/{id}")
 	public Product getProductById(@PathVariable String id) {
 		return productService.getProductById(id);
+	}
+
+	@PostMapping("/fetch-multiple")
+	public List<Product> getProductByIdList(@RequestBody ProductSearchDTO dto) {
+		return productService.getProductByIdList(dto);
     }
 
     @PostMapping
