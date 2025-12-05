@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.crestasom.cart_service.config.JwtTokenContext;
 import com.crestasom.cart_service.entity.CartDTO;
 import com.crestasom.cart_service.entity.CartItem;
 import com.crestasom.cart_service.entity.Product;
@@ -52,6 +53,7 @@ public class CartService {
 		if (u == null) {
 			throw new RuntimeException("User not found");
 		}
+		String token = JwtTokenContext.getToken();
 		dto.setUser(u);
 		List<Product> productList = new ArrayList<>();
 		List<CartItem> cartItems = cartRepository.findByUserId(userId);
@@ -62,11 +64,14 @@ public class CartService {
 		productDto.setIds(ids);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
+//		headers.set("AUTHORIZATION", "Bearer "+token);
+		headers.setBearerAuth(token);
 		HttpEntity<ProductSearchDTO> entity = new HttpEntity<>(productDto, headers);
 		log.info("calling product service to get products for [{}]", ids);
 		ResponseEntity<List<Product>> response = restTemplate.exchange(productServiceUri + "/fetch-multiple",
 				HttpMethod.POST, entity, new ParameterizedTypeReference<List<Product>>() {
 				});
+
 		if (!response.getStatusCode().is2xxSuccessful()) {
 			throw new RuntimeException("error fetching product list");
 		}

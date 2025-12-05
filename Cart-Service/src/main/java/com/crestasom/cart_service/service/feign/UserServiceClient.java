@@ -4,14 +4,12 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.crestasom.cart_service.config.FeignAuthConfig;
 import com.crestasom.cart_service.entity.User;
 
-@FeignClient(name = "user-service")
+@FeignClient(name = "USER-SERVICE", configuration = FeignAuthConfig.class)
 public interface UserServiceClient {
 
 	@GetMapping("/users/{id}")
 	User getUserById(@PathVariable Long id);
-//
-//	@PostMapping("/users")
-//	User createUser(@RequestBody User user);
 }
