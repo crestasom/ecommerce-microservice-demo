@@ -1,0 +1,37 @@
+start minikube with docker as driver
+minikube start --driver=docker
+
+minikube dashboard
+
+minikube image ls
+
+
+display cluster information
+kubectl cluster-info
+
+to get note info
+kubectl get node
+
+to connect kubernates to local docker
+    minikube docker-env
+REM @FOR /f "tokens=*" %i IN ('minikube -p minikube docker-env --shell cmd') DO @%i
+
+#to build image in minukube
+minikube image build --tag=ecom-hotel-service:latest .
+
+kubectl create deployment test-service-descivery3 --image crestasom/hotel-discovery-server:latest --port 8094
+kubectl expose deployment test-service-descivery3 --type=NodePort
+
+minikube service service-discovery --url
+
+kubectl exec -it mysql-5fbcd6fdfc-9ks5b  -- /bin/bash
+
+kubectl port-forward svc/mongodb 27027:27017
+
+
+kubectl apply -f .\hotel-service-discovery.yml
+kubectl logs -f <pod name>
+
+minikube addons enable ingress
+minikube tunnel
+kubectl get svc -n ingress-nginx

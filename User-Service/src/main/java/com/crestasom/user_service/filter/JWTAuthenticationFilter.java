@@ -27,21 +27,21 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
 			throws IOException, ServletException {
-		String header = req.getHeader("Authorization");
-		logger.info("header [{}]", header);
+		// String header = req.getHeader("Authorization");
+		// logger.info("header [{}]", header);
 
-		if (header == null || !header.startsWith("Bearer ")) {
-			res.setStatus(HttpStatus.FORBIDDEN.value());
-			return;
-		}
-		String token = header.substring(7);
-		logger.info("token [{}]", token);
-		int statusCode = jwtService.validateToken(token);
-		logger.info("statusCode [{}]", statusCode);
-		if (statusCode != 200) {
-			res.setStatus(statusCode);
-			return;
-		}
+		// if (header == null || !header.startsWith("Bearer ")) {
+		// 	res.setStatus(HttpStatus.FORBIDDEN.value());
+		// 	return;
+		// }
+		// String token = header.substring(7);
+		// logger.info("token [{}]", token);
+		// int statusCode = jwtService.validateToken(token);
+		// logger.info("statusCode [{}]", statusCode);
+		// if (statusCode != 200) {
+		// 	res.setStatus(statusCode);
+		// 	return;
+		// }
 
 		chain.doFilter(req, res);
 	}

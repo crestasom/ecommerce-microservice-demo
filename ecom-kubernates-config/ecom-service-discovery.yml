@@ -1,0 +1,33 @@
+# eureka-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecom-discovery-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ecom-discovery-server
+  template:
+    metadata:
+      labels:
+        app: ecom-discovery-server
+    spec:
+      containers:
+        - name: ecom-discovery-server
+          image: docker.io/library/ecom-discovery-server:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8120
+---
+# eureka-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ecom-discovery-server
+spec:
+  selector:
+    app: ecom-discovery-server
+  ports:
+    - port: 8120
+      targetPort: 8120

@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ecom-product-service
+  labels:
+    app: ecom-product-service
+spec:
+  selector:
+    app: ecom-product-service
+  type: ClusterIP
+  ports:
+    - port: 8112
+      targetPort: 8112
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecom-product-service
+spec:
+  selector:
+    matchLabels:
+      app: ecom-product-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ecom-product-service
+    spec:
+      containers:
+        - name: ecom-product-service
+          image: docker.io/library/ecom-product-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8112
+          env: # Setting Enviornmental Variables
+            - name: MONGO_DB_USERNAME # Setting Database name from configMap
+              value: root
+
+            - name: MONGO_DB_PASSWORD # Setting Database username from Secret
+              value: password
+
+            - name: MONGO_DB_HOST # Setting Database password from Secret
+              value: mongodb
+            - name: EUREKA_SERVER # Setting Database password from Secret
+              value: ecom-discovery-server

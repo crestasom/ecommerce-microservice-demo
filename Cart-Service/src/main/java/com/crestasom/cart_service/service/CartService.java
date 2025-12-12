@@ -105,7 +105,7 @@ public class CartService {
 		for (CartItem item : cartItems) {
 			log.info("calling product service for id {}", item.getProductId());
 
-			ResponseEntity<Product> productEntity = restTemplate.getForEntity(productServiceUri + item.getProductId(),
+			ResponseEntity<Product> productEntity = restTemplate.getForEntity("http://product-service/products/" + item.getProductId(),
 					Product.class);
 			if (productEntity.getStatusCode() != HttpStatus.OK || productEntity.getBody() == null) {
 				throw new RuntimeException("cannot get product from product service");
